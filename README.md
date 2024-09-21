@@ -1,0 +1,2 @@
+# stockmanagementsystem.github.io
+schoolproject.
