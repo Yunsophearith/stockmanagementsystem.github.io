@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Stock Management System</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+}
+
+.left-sidebar {
+    background-color: #f8f9fa;
+    padding: 15px;
+    width: 250px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    border-right: 2px solid #ccc;
+}
+
+.left-sidebar h2 {
+    border-bottom: 2px solid #4CAF50;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.right-sidebar {
+    background-color: #f8f9fa;
+    padding: 15px;
+    width: 250px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+.nav-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.nav-button:hover {
+    background-color: #0056b3;
+}
+
+.summary {
+    background-color: #d9edf7;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 6px solid #31708f;
+}
+
+.product-table, .supplier-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.product-table th, .supplier-table th, .product-table td, .supplier-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.product-table th, .supplier-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.track-button {
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.track-button:hover {
+    background-color: #E68900;
+}
+
+.notification {
+    background-color: #e7f3fe;
+    color: #31708f;
+    border-left: 6px solid #31708f;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.report-summary {
+    margin-top: 20px;
+}
+
+.report-summary h4 {
+    margin-bottom: 10px;
+}
+
+.report-date {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.notification {
+    display: none; /* Hidden by default */
+    background-color: #f9c2c2;
+    color: #721c24;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+/* Add a class to show the notification */
+.show {
+    display: block;
+}
+
+.notification {
+    background-color: #e7f3fe;
+    color: #31708f;
+    border-left: 6px solid #31708f;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.notification {
+    background-color: #e7f3fe;
+    color: #31708f;
+    border-left: 6px solid #31708f;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Stock Management System</h1>
+    </header>
+    <div class="container">
+        <aside class="left-sidebar">
+            <h2>Dashboard</h2>
+            <nav>
+                <ul>
+                    <li><button class="nav-button" onclick="showOverview()">Overview</button></li>
+                    <li><button class="nav-button" onclick="showInOutTracking()">In-Out Tracking</button></li>
+                    <li><button class="nav-button" onclick="showSupplierManagement()">Supplier Management</button></li>
+                    <li><button class="nav-button" onclick="showReports()">Reports</button></li>
+                    <li><button class="nav-button" onclick="showAuditing()">Stock Audit</button></li>
+                </ul>
+            </nav>
+            <h3>Summary</h3>
+            <div class="summary">
+                <p>Total Products: <span id="total-products">120</span></p>
+                <p>Low Stock Alerts: <span id="low-stock-alerts">3</span></p>
+                <p>Automated Processes: <span id="auto-stock-process">Enabled</span></p>
+            </div>
+        </aside>
+        
+        <main class="main-content" id="main-content">
+            <h2>Welcome to the Stock Management System</h2>
+            <p>Select an option from the dashboard.</p>
+            <div id="product-details" class="hidden">
+                <h3>Product Details</h3>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Reorder Level</th>
+                            <th>Expiry Date</th>
+                            <th>Track Movement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>101</td>
+                            <td>Product A</td>
+                            <td>50</td>
+                            <td>20</td>
+                            <td>2024-12-01</td>
+                            <td><button class="track-button" onclick="trackMovement(101)">Track</button></td>
+                        </tr>
+                        <tr>
+                            <td>102</td>
+                            <td>Product B</td>
+                            <td>15</td>
+                            <td>10</td>
+                            <td>2025-01-15</td>
+                            <td><button class="track-button" onclick="trackMovement(102)">Track</button></td>
+                        </tr>
+                        <tr>
+                            <td>103</td>
+                            <td>Product C</td>
+                            <td>30</td>
+                            <td>25</td>
+                            <td>2024-10-30</td>
+                            <td><button class="track-button" onclick="trackMovement(103)">Track</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="supplier-management" class="hidden">
+                <h3>Supplier Management</h3>
+                <button class="nav-button" onclick="addSupplier()">Add New Supplier</button>
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Supplier ID</th>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Order History</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>001</td>
+                            <td>Supplier A</td>
+                            <td>123-456-7890</td>
+                            <td>suppliera@example.com</td>
+                            <td><button class="track-button" onclick="viewOrderHistory(1)">View Orders</button></td>
+                        </tr>
+                        <tr>
+                            <td>002</td>
+                            <td>Supplier B</td>
+                            <td>098-765-4321</td>
+                            <td>supplierb@example.com</td>
+                            <td><button class="track-button" onclick="viewOrderHistory(2)">View Orders</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="reporting" class="hidden">
+                <h3>Reporting and Analytics</h3>
+                <button class="nav-button" onclick="generateReport()">Generate Report</button>
+                <p>Detailed reports on inventory levels, turnover, and supplier performance.</p>
+                <div class="report-summary">
+                    <h4>Recent Reports</h4>
+                    <ul>
+                        <li>Inventory Report - <span class="report-date">2024-09-21</span></li>
+                        <li>Supplier Performance - <span class="report-date">2024-09-20</span></li>
+                        <li>Stock Levels - <span class="report-date">2024-09-19</span></li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        
+        <aside class="right-sidebar">
+            <h2>Products</h2>
+            <div id="notifications"></div>
+
+            <aside class="right-sidebar">
+                <h2>Notifications</h2>
+                <div id="notifications">
+                    <p>No new notifications.</p>
+                </div>
+                
+                <div class="data-tracking">
+                    <h3>Recent Product Updates</h3>
+                    <div class="product-item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeKjPtY5jZuHyE3Q5S8umVZbDYZdlK5YLCA&s.jpg" alt="Product A" class="product-image">
+                        <div class="product-info">
+                            <strong>Product A</strong>
+                            <p>Added 150 units on 2024-09-21.</p>
+                        </div>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://www.shutterstock.com/image-photo/corporate-regulatory-compliance-quality-control-600nw-2152503041.jpg" alt="Product B" class="product-image">
+                        <div class="product-info">
+                            <strong>Product B</strong>
+                            <p>Sold 30 units on 2024-09-20.</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            
+            <style>
+                .right-sidebar {
+                    width: 250px;
+                    margin-left: 20px;
+                    background-color: #fff;
+                    padding: 15px;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+            
+                .data-tracking {
+                    margin-top: 20px;
+                }
+            
+                .product-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                }
+            
+                .product-image {
+                    width: 50px; /* Adjust size as needed */
+                    height: auto;
+                    margin-right: 10px;
+                }
+            
+                .product-info {
+                    flex: 1;
+                }
+            </style>
+            
+            
+        </aside>
+
+        <!-- Data Tracking Section -->
+<div class="data-tracking">
+    <h3>Product In-Out Tracking</h3>
+    <p>Latest product movements:</p>
+    <div class="tracking-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Movement Type</th>
+                    <th>Quantity</th>
+                    <th>Movement Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Product A</td>
+                    <td>In</td>
+                    <td>150</td>
+                    <td>2024-09-21</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Product B</td>
+                    <td>Out</td>
+                    <td>30</td>
+                    <td>2024-09-20</td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Product C</td>
+                    <td>In</td>
+                    <td>75</td>
+                    <td>2024-09-19</td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Product D</td>
+                    <td>Out</td>
+                    <td>50</td>
+                    <td>2024-09-18</td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>Product E</td>
+                    <td>In</td>
+                    <td>100</td>
+                    <td>2024-09-17</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .data-tracking {
+        margin-top: 20px;
+        border: 2px solid #3498db;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .tracking-table {
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+    .tracking-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .tracking-table th, .tracking-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    .tracking-table th {
+        background: #3498db;
+        color: white;
+    }
+</style>
+
+    </div>
+    <footer>
+        <p>&copy; 2024 Stock Management System</p>
+    </footer>
+    <script>
+        function showOverview() {
+    document.getElementById('main-content').innerHTML = `
+        <h2>Dashboard Overview</h2>
+        <p>Total Products: <span id="total-products">120</span></p>
+        <p>Low Stock Alerts: <span id="low-stock-alerts">3</span></p>
+        <p>Automated Processes: <span id="auto-stock-process">Enabled</span></p>
+        <p>Welcome to your stock management system! Here, you can monitor your inventory levels, manage suppliers, and generate reports.</p>
+    `;
+    hideAllSections();
+    showNotification("Overview loaded", "info");
+}
+
+function showInOutTracking() {
+    document.getElementById('main-content').innerHTML = `
+        <h2>In-Out Tracking</h2>
+        <p>Log and track product movements.</p>
+        <button class="nav-button" onclick="logProductMovement()">Log Movement</button>
+    `;
+    hideAllSections();
+    showNotification("In-Out Tracking loaded", "info");
+}
+
+function showSupplierManagement() {
+    document.getElementById('main-content').innerHTML = `
+        <h3>Supplier Management</h3>
+        <button class="nav-button" onclick="addSupplier()">Add New Supplier</button>
+        <table class="supplier-table">
+            <thead>
+                <tr>
+                    <th>Supplier ID</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Order History</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Supplier A</td>
+                    <td>123-456-7890</td>
+                    <td>suppliera@example.com</td>
+                    <td><button class="track-button" onclick="viewOrderHistory(1)">View Orders</button></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Supplier B</td>
+                    <td>098-765-4321</td>
+                    <td>supplierb@example.com</td>
+                    <td><button class="track-button" onclick="viewOrderHistory(2)">View Orders</button></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    hideAllSections();
+    showSection('supplier-management');
+    showNotification("Supplier Management loaded", "info");
+}
+
+function showReports() {
+    document.getElementById('main-content').innerHTML = `
+        <h3>Reporting and Analytics</h3>
+        <button class="nav-button" onclick="generateReport()">Generate Report</button>
+        <p>Detailed reports on inventory levels, turnover, and supplier performance.</p>
+        <div class="report-summary">
+            <h4>Recent Reports</h4>
+            <ul>
+                <li>Inventory Report - <span class="report-date">2024-09-21</span></li>
+                <li>Supplier Performance - <span class="report-date">2024-09-20</span></li>
+                <li>Stock Levels - <span class="report-date">2024-09-19</span></li>
+            </ul>
+        </div>
+    `;
+    hideAllSections();
+    showSection('reporting');
+    showNotification("Reports loaded", "info");
+}
+
+function showAuditing() {
+    document.getElementById('main-content').innerHTML = `
+        <h2>Stock Auditing</h2>
+        <p>Provide tools for stock reconciliation and auditing.</p>
+        <button class="nav-button" onclick="logStockAudit()">Log Stock Audit</button>
+    `;
+    hideAllSections();
+    showSection('auditing');
+    showNotification("Stock Audit loaded", "info");
+}
+
+function trackMovement(productId) {
+    showNotification(`Tracking movement for Product ID: ${productId}`, "info");
+}
+
+function addSupplier() {
+    showNotification("Add Supplier functionality to be implemented", "info");
+}
+
+function generateReport() {
+    showNotification("Report generated successfully!", "success");
+}
+
+function logProductMovement() {
+    showNotification("Product movement logged successfully!", "success");
+}
+
+function hideAllSections() {
+    const sections = ['product-details', 'supplier-management', 'reporting', 'auditing'];
+    sections.forEach(section => {
+        document.getElementById(section).classList.add('hidden');
+    });
+}
+
+function showSection(sectionId) {
+    document.getElementById(sectionId).classList.remove('hidden');
+}
+
+function showNotification(message, type) {
+    const notificationsDiv = document.getElementById('notifications');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notificationsDiv.appendChild(notification);
+    setTimeout(() => {
+        notificationsDiv.removeChild(notification);
+    }, 3000);
+
+    function addSupplier() {
+        // Show a notification or alert before redirecting
+        alert("New supplier will be added. Redirecting...");
+        window.location.href = 'supplier.html'; // Redirect to supplier.html
+    }
+    
+}
+
+function logProductMovement() {
+    showNotification("Logging product movement...", "info");
+    setTimeout(() => {
+        window.location.href = 'log-movement.html'; // Redirect to log-movement.html after delay
+    }, 1000); // Adjust the delay time as needed
+}
+
+function addSupplier() {
+    showNotification("Adding new supplier...", "info");
+    setTimeout(() => {
+        window.location.href = 'supplier.html'; // Redirect to supplier.html after delay
+    }, 1000); // Adjust the delay time as needed
+}
+
+function viewOrderHistory(supplierId) {
+    showNotification("Viewing order history...", "info");
+    setTimeout(() => {
+        window.location.href = 'vieworder.html'; // Redirect to vieworder.html after delay
+    }, 1000); // Adjust the delay time as needed
+}
+
+    function showNotification(message, type) {
+        const notificationsDiv = document.getElementById('notifications');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notificationsDiv.appendChild(notification);
+        setTimeout(() => {
+            notificationsDiv.removeChild(notification);
+        }, 3000); // Notification display duration
+    }
+
+    function logProductMovement() {
+        showNotification("Logging product movement...", "info");
+        setTimeout(() => {
+            window.location.href = 'log-movement.html'; // Redirect after 3 seconds
+        }, 1000);
+    }
+
+    function addSupplier() {
+        showNotification("Adding new supplier...", "info");
+        setTimeout(() => {
+            window.location.href = 'supplier.html'; // Redirect after 3 seconds
+        }, 1000);
+    }
+
+    function viewOrderHistory(supplierId) {
+        showNotification("Viewing order history...", "info");
+        setTimeout(() => {
+            window.location.href = 'vieworder.html'; // Redirect after 3 seconds
+        }, 1000);
+    }
+
+    function generateReport() {
+    showNotification("Generating report...", "info");
+    setTimeout(() => {
+        window.location.href = 'reports.html'; // Redirect to reports.html after delay
+    }, 1000); // Adjust the delay time as needed
+}
+
+function logStockAudit() {
+    showNotification("Logging stock audit...", "info");
+    setTimeout(() => {
+        window.location.href = 'stock-audit.html'; // Redirect to stock-audit.html after delay
+    }, 1000); // Adjust the delay time as needed
+}
+
+    function showNotification(message, type) {
+        const notificationsDiv = document.getElementById('notifications');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notificationsDiv.appendChild(notification);
+        setTimeout(() => {
+            notificationsDiv.removeChild(notification);
+        }, 3000); // Notification display duration
+    }
+
+    function generateReport() {
+        showNotification("Generating report...", "info");
+        setTimeout(() => {
+            window.location.href = 'reports.html'; // 
+        }, 1000);
+    }
+
+    function logStockAudit() {
+        showNotification("Logging stock audit...", "info");
+        setTimeout(() => {
+            window.location.href = 'stock-audit.html'; // 
+        }, 1000);
+    }
+
+    // Other functions remain the same...
+
+
+
+    </script>
+</body>
+</html>

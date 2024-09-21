@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log and Track Product Movements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #3498db;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            margin: 20px;
+        }
+        .left-sidebar {
+            width: 200px;
+            margin-right: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .main-content {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav li {
+            margin-bottom: 10px;
+        }
+        .nav-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        .nav-button:hover {
+            background-color: #45a049;
+        }
+        .movement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .movement-table th, .movement-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .movement-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #3498db;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Log and Track Product Movements</h1>
+    </header>
+    <div class="container">
+        <aside class="left-sidebar">
+            <h2>Dashboard</h2>
+            <nav>
+                <ul>
+                    <li><button class="nav-button" onclick="window.location.href='index.html'">Overview</button></li>
+                    <li><button class="nav-button" onclick="window.location.href='log-movement.html'">In-Out Tracking</button></li>
+                    <li><button class="nav-button" onclick="showSupplierManagement()">Supplier Management</button></li>
+                    <li><button class="nav-button" onclick="showReports()">Reports</button></li>
+                    <li><button class="nav-button" onclick="showAuditing()">Stock Audit</button></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h2>Track Product Movements</h2>
+            <form id="logMovementForm">
+                <label for="productId">Product ID:</label>
+                <input type="text" id="productId" required>
+                
+                <label for="movementType">Movement Type:</label>
+                <select id="movementType">
+                    <option value="in">In</option>
+                    <option value="out">Out</option>
+                </select>
+                
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" required>
+                
+                <label for="movementDate">Movement Date:</label>
+                <input type="date" id="movementDate" required>
+                
+                <button type="submit" class="nav-button">Log Movement</button>
+            </form>
+            
+            <h3>Movement History</h3>
+            <table class="movement-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Movement Type</th>
+                        <th>Quantity</th>
+                        <th>Movement Date</th>
+                    </tr>
+                </thead>
+                <tbody id="movementHistory">
+                    <!-- Movement history entries will be appended here -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+    <footer>
+        <p>&copy; 2024 Stock Management System</p>
+    </footer>
+
+    <script>
+        document.getElementById('logMovementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productId = document.getElementById('productId').value;
+            const movementType = document.getElementById('movementType').value;
+            const quantity = document.getElementById('quantity').value;
+            const movementDate = document.getElementById('movementDate').value;
+
+            // Add new movement to the history
+            const historyRow = document.createElement('tr');
+            historyRow.innerHTML = `
+                <td>${productId}</td>
+                <td>${movementType}</td>
+                <td>${quantity}</td>
+                <td>${movementDate}</td>
+            `;
+            
+            document.getElementById('movementHistory').appendChild(historyRow);
+            
+            // Clear form fields
+            document.getElementById('logMovementForm').reset();
+
+            // Redirect to the movement history (just for example, can also keep on the same page)
+            setTimeout(() => {
+                alert('Movement logged successfully!');
+                window.location.href = 'log-movement.html'; // Redirect to the same page to see the update
+            }, 500);
+        });
+    </script>
+</body>
+</html>
